@@ -26,7 +26,7 @@ import Foundation
 
 //MARK: - TimeZoneNames -
 
-public protocol TimeZoneConvertible {
+public protocol TimeZoneConvertible : DateRegionSpecifier {
 	var timeZone :NSTimeZone { get }
 	var description :String { get }
 }

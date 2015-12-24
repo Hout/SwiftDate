@@ -27,6 +27,21 @@
 @available(*, renamed="DateRegion")
 public typealias Region = DateRegion
 
+/// All classes and protocols that can define a DateRegion must comply to the DateRegionSpecifier protocol
+public protocol DateRegionSpecifier {}
+
+// These classes comply. 
+// Please note: As we cannot extend the protocol `TimeZoneConvertible`, the DateRegionSpecifier conformance 
+// is defined on the `TimeZoneConvertible` protocol itself.
+//
+extension String: DateRegionSpecifier {}
+extension NSCalendar: DateRegionSpecifier {}
+extension NSTimeZone: DateRegionSpecifier {}
+extension NSLocale: DateRegionSpecifier {}
+extension CalendarType: DateRegionSpecifier {}
+extension NSDateComponents: DateRegionSpecifier {}
+
+
 /// DateRegion encapsulates all objects you need when representing a date ffrom an absolute time like NSDate.
 ///
 @available(*, introduced=2.1)
@@ -83,13 +98,17 @@ public class DateRegion: Equatable {
     /// - Note: parameters that are specified left in the list take precedence over parameters right in the list. E.g.
     ///     `DateRegion(locale: mylocale, "en_AU", region)` will copy region and set locale to mylocale, not `en_AU`.
     ///
-    public convenience init(_ initObjects: Any...) {
+    public convenience init(_ initObjects: DateRegionSpecifier?...) {
 
         var calendar: NSCalendar = NSCalendar.currentCalendar()
         var timeZone: NSTimeZone = NSTimeZone.defaultTimeZone()
         var locale: NSLocale = NSLocale.currentLocale()
         
         for initObject in initObjects.reverse() {
+            
+            guard initObject != nil else {
+                continue
+            }
 
             if initObject is NSCalendar {
                 calendar = (initObject as! NSCalendar)
@@ -166,10 +185,10 @@ public class DateRegion: Equatable {
                     calendar = generatedCalendar
                     continue
                 }
-                
-                // This line should not be reached unless there is an invalid initialisation object in the initObjects array
-                assertionFailure("Illegal initialiser object for DateRegion: \(initObject)")
             }
+            
+            // This line should not be reached unless there is an invalid initialisation object in the initObjects array
+            assertionFailure("Illegal initialiser object for DateRegion: \(initObject)")
             
         }
         self.init(calendar: calendar, timeZone: timeZone, locale: locale)
