@@ -18,7 +18,8 @@ class DateRegionStringSpec: QuickSpec {
             
             context("toString UTC") {
                 
-                let utcDate = DateInRegion(year: 2015, month: 4, day: 13, hour: 22, minute: 10, timeZoneID: "UTC")!
+                let utc = DateRegion("UTC")
+                let utcDate = DateInRegion(year: 2015, month: 4, day: 13, hour: 22, minute: 10, region: utc)!
                 
                 it("should return proper ISO 8601 string") {
                     expect(utcDate.toString(DateFormat.ISO8601)) == "2015-04-13T22:10:00+0000"
@@ -77,7 +78,7 @@ class DateRegionStringSpec: QuickSpec {
             context("relative strings") {
                 
                 it("should return today in en_US locale") {
-                    let newYork = DateRegion(calendarType: CalendarType.Gregorian, timeZoneRegion: TimeZones.America.New_York, localeID: "en_US")
+                    let newYork = DateRegion(CalendarType.Gregorian, TimeZones.America.New_York, "en_US")
                     let date = NSDate()
                     let str = date.toRelativeCocoaString(inRegion: newYork) // should return 'Today' (in English)
                     
@@ -86,7 +87,7 @@ class DateRegionStringSpec: QuickSpec {
                 }
                 
                 it("should return tomorrow in it_IT locale") {
-                    let it_utc_region = DateRegion(calendarType: CalendarType.Gregorian, timeZoneRegion: TimeZones.GMT, locale: NSLocale(localeIdentifier: "it_IT"))
+                    let it_utc_region = DateRegion(CalendarType.Gregorian, TimeZones.GMT, NSLocale(localeIdentifier: "it_IT"))
                     let date = NSDate() + 1.days
                     let str = date.toRelativeCocoaString(inRegion: it_utc_region) // should return 'Oggi' (in Italian)
                     
@@ -95,7 +96,7 @@ class DateRegionStringSpec: QuickSpec {
                 }
                 
                 it("should return the day after tomorrow in nl_NL locale") {
-                    let amsterdam = DateRegion(calendarType: CalendarType.Gregorian, timeZoneID: "CET", locale: NSLocale(localeIdentifier: "nl_NL"))
+                    let amsterdam = DateRegion(CalendarType.Gregorian, "CET", NSLocale(localeIdentifier: "nl_NL"))
                     let date = NSDate() + 2.days
                     let str = date.toRelativeCocoaString(inRegion: amsterdam) // should return 'Overmorgen' (in Dutch)
                     

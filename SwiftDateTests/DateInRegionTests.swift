@@ -17,10 +17,10 @@ class DateInRegionSpec: QuickSpec {
 
     override func spec() {
 
-        let newYork = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "America/New York", localeID: "en_US")
-        let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "Europe/Amsterdam", localeID: "nl_NL")
-        let italy = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "Europe/Rome", localeID: "it_IT")
-        let utc = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "UTC", localeID: "en_UK")
+        let newYork = DateRegion(NSCalendarIdentifierGregorian, "America/New_York", "en_US")
+        let netherlands = DateRegion(NSCalendarIdentifierGregorian, "Europe/Amsterdam", "nl_NL")
+        let italy = DateRegion(NSCalendarIdentifierGregorian, "Europe/Rome", "it_IT")
+        let utc = DateRegion(NSCalendarIdentifierGregorian, "UTC", "en_GB")
 
         describe("DateInRegion") {
 
@@ -299,10 +299,12 @@ class DateInRegionSpec: QuickSpec {
 
             context("conversions") {
 
-                let region1 = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
-                let region2 = DateRegion(calendarID: NSCalendarIdentifierHebrew, timeZoneID: "IST", localeID: "jp_JP")
+                let region1 = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
+                let region2 = DateRegion(NSCalendarIdentifierHebrew, "IST", "he_IL")
+                let region3 = DateRegion(NSCalendarIdentifierGregorian, TimeZones.Africa.Asmara, "ti_ET")
                 let date1 = DateInRegion(year: 1999, month: 12, day: 31, region: region1)!
                 let date2 = date1.inRegion(region2)
+                let date3 = date1.inRegion(region3)
 
                 it("should convert to another calendar") {
                     expect(date2.day) == 22
@@ -319,7 +321,7 @@ class DateInRegionSpec: QuickSpec {
                 }
                 
                 it("should convert to another locale") {
-                    expect(date2.toString(dateStyle: .MediumStyle)) == "22 Tevet 5760"
+                    expect(date3.toString(dateStyle: .MediumStyle)) == "31-ዲሴም-1999"
                 }
                 
                 it("should convert to another region") {
@@ -407,8 +409,8 @@ class DateInRegionSpec: QuickSpec {
             
             context("date formatter") {
 
-                let china = DateRegion(calendarID: NSCalendarIdentifierBuddhist, timeZoneID: "Asia/Shanghai", localeID: "zh_CN")
-                let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
+                let china = DateRegion(NSCalendarIdentifierBuddhist, "Asia/Shanghai", "zh_Hans_CN")
+                let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
                 let date = DateInRegion(year: 1999, month: 12, day: 31, hour: 23, minute: 59, second: 59, nanosecond: 500000000, region: netherlands)!
 
                 it("should initiate default date formatter") {

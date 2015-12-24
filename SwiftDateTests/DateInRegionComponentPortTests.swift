@@ -101,9 +101,9 @@ class DateInRegionComponentPortSpec: QuickSpec {
         
         context("component initialisation") {
             
-            let newYork = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "EST", localeID: "en_US")
-            let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
-            let utc = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "UTC", localeID: "en_UK")
+            let newYork = DateRegion(NSCalendarIdentifierGregorian, "EST", "en_US")
+            let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
+            let utc = DateRegion(NSCalendarIdentifierGregorian, "UTC", "en_GB")
             
             it("should return a midnight date with nil YMD initialisation in various regions") {
                 for region in [newYork, netherlands, utc] {
@@ -179,7 +179,7 @@ class DateInRegionComponentPortSpec: QuickSpec {
         
         context("In Gregorian weekends") {
             
-            let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
+            let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
             
             it("should return a proper weekend value for a Saturday") {
                 let date = DateInRegion(year: 2015, month: 11, day: 7, region: netherlands)!
@@ -220,7 +220,7 @@ class DateInRegionComponentPortSpec: QuickSpec {
         
         context("Next weekend") {
             
-            let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
+            let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
             let expectedStartDate = DateInRegion(year: 2015, month: 11, day: 7, region: netherlands)!
             let expectedEndDate = (expectedStartDate + 1.days).endOf(.Day)
             
@@ -291,7 +291,7 @@ class DateInRegionComponentPortSpec: QuickSpec {
         
         context("Previous weekend") {
             
-            let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
+            let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
             let expectedStartDate = DateInRegion(year: 2015, month: 10, day: 31, region: netherlands)!
             let expectedEndDate = (expectedStartDate + 1.days).endOf(.Day)
             

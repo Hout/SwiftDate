@@ -20,7 +20,8 @@ class DateInRegionComparisonSpec: QuickSpec {
             
             context("compareDates") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let france = DateRegion(CalendarType.Gregorian, "CET", "fr_FR")
+                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, region: france)!
                 
                 it("should report proper results for year granularity unit") {
                     let date1 = date - 1.years
@@ -88,7 +89,8 @@ class DateInRegionComparisonSpec: QuickSpec {
             
             context("isIn") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let spain = DateRegion(CalendarType.Gregorian, "CET", "es_ES")
+                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, region: spain)!
                 
                 it("should report proper results for year granularity unit") {
                     let date1 = date - 1.years
@@ -163,7 +165,8 @@ class DateInRegionComparisonSpec: QuickSpec {
             
             context("isBefore") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let spain = DateRegion(CalendarType.Gregorian, "CET", "es_ES")
+                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, region: spain)!
                 
                 it("should report proper results for year granularity unit") {
                     let date1 = date - 1.years
@@ -238,7 +241,8 @@ class DateInRegionComparisonSpec: QuickSpec {
             
             context("isAfter") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let spain = DateRegion(CalendarType.Gregorian, "CET", "es_ES")
+                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, region: spain)!
                 
                 it("should report proper results for year granularity unit") {
                     let date1 = date - 1.years

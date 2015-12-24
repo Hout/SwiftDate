@@ -19,13 +19,11 @@ class DateregionSpec: QuickSpec {
         describe("DateRegion") {
 
             let region = DateRegion()
-            let india = DateRegion(calendarID: NSCalendarIdentifierIndian, timeZoneID: "IST", localeID: "en_IN")
-            let hebrew = DateRegion(calendarID: NSCalendarIdentifierHebrew, timeZoneID: "Asia/Jerusalem", localeID: "he_IL")
 
             context("soon to be deprecated parameters") {
                 // CalType, tzName & Region type
-                let china = DateRegion(calType: CalendarType.RepublicOfChina, tzName: TimeZones.Asia.Shanghai)
-                let dubai = Region(calType: CalendarType.IslamicCivil, tzName: TimeZones.Asia.Dubai)
+                let china = DateRegion(CalendarType.RepublicOfChina, TimeZones.Asia.Shanghai)
+                let dubai = Region(CalendarType.IslamicCivil, TimeZones.Asia.Dubai)
                 
                 it("should have the specified calendar") {
                     expect(china.calendar) == NSCalendar(calendarIdentifier: NSCalendarIdentifierRepublicOfChina)
@@ -38,8 +36,11 @@ class DateregionSpec: QuickSpec {
                 }
             }
             
-            context("initialisation") {
+            context("initialisation with named parameters") {
 
+                let india = DateRegion(NSCalendarIdentifierIndian, "IST", "en_IN")
+                let hebrew = DateRegion(NSCalendarIdentifierHebrew, "Asia/Jerusalem", "he_IL")
+                
                 it("should have the default time zone & locale in the current calendar") {
                     expect(region.calendar.calendarIdentifier) == NSCalendar.currentCalendar().calendarIdentifier
                     expect(region.timeZone.abbreviation) == NSTimeZone.defaultTimeZone().abbreviation
@@ -104,22 +105,22 @@ class DateregionSpec: QuickSpec {
                 }
                 
                 it("should return false when unequal calendars") {
-                    let region1 = DateRegion(calendarID: NSCalendarIdentifierIslamic)
-                    let region2 = DateRegion(calendarID: NSCalendarIdentifierIslamicCivil)
+                    let region1 = DateRegion(NSCalendarIdentifierIslamic)
+                    let region2 = DateRegion(NSCalendarIdentifierIslamicCivil)
 
                     expect(region1) != region2
                 }
                 
                 it("should return false when unequal time zones") {
-                    let region1 = DateRegion(timeZoneID: "UTC")
-                    let region2 = DateRegion(timeZoneID: "CET")
+                    let region1 = DateRegion("UTC")
+                    let region2 = DateRegion("CET")
 
                     expect(region1) != region2
                 }
                 
                 it("should return false when unequal locales") {
-                    let region1 = DateRegion(localeID: "nl_NL")
-                    let region2 = DateRegion(localeID: "en_NZ")
+                    let region1 = DateRegion("nl_NL")
+                    let region2 = DateRegion("en_NZ")
 
                     expect(region1) != region2
                 }

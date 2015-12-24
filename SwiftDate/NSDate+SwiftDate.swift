@@ -71,21 +71,9 @@ extension NSDate {
         minute: Int? = nil,
         second: Int? = nil,
         nanosecond: Int? = nil,
-        calendarID: String = "",
-        timeZoneID: String = "",
-        localeID: String = "",
-        calType: CalendarType? = nil, // Deprecate in SwiftDate v2.2
-        tzName: TimeZoneConvertible? = nil, // Deprecate in SwiftDate v2.2
-        calendarType: CalendarType? = nil,
-        timeZoneRegion: TimeZoneConvertible? = nil,
-        calendar aCalendar: NSCalendar? = nil,
-        timeZone aTimeZone: NSTimeZone? = nil,
-        locale aLocale: NSLocale? = nil,
-        region aRegion: DateRegion? = nil) {
+        region: DateRegion? = nil) {
             
-            let newRegion = DateRegion(calendarID: calendarID, timeZoneID: timeZoneID, localeID: localeID, calType: calType, tzName: tzName, calendarType: calendarType, timeZoneRegion: timeZoneRegion, calendar: aCalendar, timeZone: aTimeZone, locale: aLocale, region: aRegion)
-
-            if let dateInRegion = DateInRegion(fromDate: fromDate.inRegion(newRegion), era: era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: newRegion) {
+            if let dateInRegion = DateInRegion(fromDate: fromDate.inRegion(region), era: era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: region) {
                 self.init(timeIntervalSinceReferenceDate: dateInRegion.timeIntervalSinceReferenceDate)
             } else {
                 return nil
@@ -104,18 +92,9 @@ extension NSDate {
         calendarID: String = "",
         timeZoneID: String = "",
         localeID: String = "",
-        calType: CalendarType? = nil, // Deprecate in SwiftDate v2.2
-        tzName: TimeZoneConvertible? = nil, // Deprecate in SwiftDate v2.2
-        calendarType: CalendarType? = nil,
-        timeZoneRegion: TimeZoneConvertible? = nil,
-        calendar aCalendar: NSCalendar? = nil,
-        timeZone aTimeZone: NSTimeZone? = nil,
-        locale aLocale: NSLocale? = nil,
-        region aRegion: DateRegion? = nil) {
+        region: DateRegion? = nil) {
             
-            let newRegion = DateRegion(calendarID: calendarID, timeZoneID: timeZoneID, localeID: localeID, calType: calType, tzName: tzName, calendarType: calendarType, timeZoneRegion: timeZoneRegion, calendar: aCalendar, timeZone: aTimeZone, locale: aLocale, region: aRegion)
-
-            if let dateInRegion = DateInRegion(era: era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: newRegion) {
+            if let dateInRegion = DateInRegion(era: era, year: year, month: month, day: day, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: region) {
                 self.init(timeIntervalSinceReferenceDate: dateInRegion.timeIntervalSinceReferenceDate)
             } else {
                 return nil
@@ -135,18 +114,9 @@ extension NSDate {
         calendarID: String = "",
         timeZoneID: String = "",
         localeID: String = "",
-        calType: CalendarType? = nil, // Deprecate in SwiftDate v2.2
-        tzName: TimeZoneConvertible? = nil, // Deprecate in SwiftDate v2.2
-        calendarType: CalendarType? = nil,
-        timeZoneRegion: TimeZoneConvertible? = nil,
-        calendar aCalendar: NSCalendar? = nil,
-        timeZone aTimeZone: NSTimeZone? = nil,
-        locale aLocale: NSLocale? = nil,
-        region aRegion: DateRegion? = nil) {
+        region: DateRegion? = nil) {
             
-            let newRegion = DateRegion(calendarID: calendarID, timeZoneID: timeZoneID, localeID: localeID, calType: calType, tzName: tzName, calendarType: calendarType, timeZoneRegion: timeZoneRegion, calendar: aCalendar, timeZone: aTimeZone, locale: aLocale, region: aRegion)
-
-            if let dateInRegion = DateInRegion(era: era, yearForWeekOfYear: yearForWeekOfYear, weekOfYear: weekOfYear, weekday: weekday, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: newRegion) {
+            if let dateInRegion = DateInRegion(era: era, yearForWeekOfYear: yearForWeekOfYear, weekOfYear: weekOfYear, weekday: weekday, hour: hour, minute: minute, second: second, nanosecond: nanosecond, region: region) {
                 self.init(timeIntervalSinceReferenceDate: dateInRegion.timeIntervalSinceReferenceDate)
             } else {
                 return nil
@@ -240,8 +210,8 @@ extension NSDate {
      
      - returns: a new DateInRegion instance representing this date in specified region. You can query for each component and it will be returned taking care of the region components specified.
      */
-    public func inRegion(region :DateRegion = DateRegion()) -> DateInRegion {
-        let dateInRegion = DateInRegion(absoluteTime: self, region: region)
+    public func inRegion(region :DateRegion? = nil) -> DateInRegion {
+        let dateInRegion = DateInRegion(absoluteTime: self, region: region ?? DateRegion())
         return dateInRegion
     }
     

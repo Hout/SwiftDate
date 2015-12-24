@@ -20,23 +20,34 @@ class NSDateSpec: QuickSpec {
 
             context("soon to be deprecated parameters") {
                 
-                it("should have been initialised with the specified time zone and calendar") {
-                    let date = NSDate(year: 1437, month: 3, day: 13, hour: 3, calType: .IslamicCivil, tzName: TimeZones.Asia.Dubai)!
-                    
-                    expect(date.toString()) == "Dec 25, 2015, 12:00:00 AM"
-                }
+                let utc = DateRegion(TimeZones.GMT)
                 
                 it("should have been initialised with the specified time zone and calendar") {
-                    let date = NSDate(year: 2015, month: 12, day: 25, calType: .Gregorian, tzName: TimeZones.Europe.Amsterdam)!
+                    let dubai = DateRegion(CalendarType.IslamicCivil, TimeZones.Asia.Dubai)
+                    let date = NSDate(year: 1437, month: 3, day: 13, hour: 4, region: dubai)!
                     
-                    expect(date.toString()) == "Dec 25, 2015, 12:00:00 AM"
+                    expect(date.toString(DateFormat.ISO8601, inRegion: utc)) == "2015-12-25T00:00:00+0000"
+                }
+                
+                it("should have been initialised with the Kaliningrad time zone and calendar in winter") {
+                    let kaliningrad = DateRegion(CalendarType.Gregorian, TimeZones.Europe.Kaliningrad)
+                    let date = NSDate(year: 2015, month: 12, day: 25, hour: 2, region: kaliningrad)!
+                    
+                    expect(date.toString(DateFormat.ISO8601, inRegion: utc)) == "2015-12-25T00:00:00+0000"
+                }
+                
+                it("should have been initialised with the Kaliningrad time zone and calendar in summer") {
+                    let kaliningrad = DateRegion(CalendarType.Gregorian, TimeZones.Europe.Kaliningrad)
+                    let date = NSDate(year: 2015, month: 6, day: 25, hour: 2, region: kaliningrad)!
+                    
+                    expect(date.toString(DateFormat.ISO8601, inRegion: utc)) == "2015-06-25T00:00:00+0000"
                 }
                 
             }
             
-            let newYork = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "America/New York", localeID: "en_US")
-            let amsterdam = DateRegion(calendar: CalendarType.Gregorian.toCalendar(), timeZoneID: "CET", localeID: "nl_NL")
-            let rome = DateRegion(calendarType: CalendarType.Gregorian, timeZoneRegion: TimeZones.Europe.Rome, localeID: "it_IT")
+            let newYork = DateRegion(NSCalendarIdentifierGregorian, "America/New_York", "en_US")
+            let amsterdam = DateRegion(CalendarType.Gregorian.toCalendar(), "CET", "nl_NL")
+            let rome = DateRegion(NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian), TimeZones.Europe.Rome, "it_IT")
 
             context("initialisation") {
 
@@ -129,7 +140,7 @@ class NSDateSpec: QuickSpec {
                 it("Should convert to the right region") {
                     let date = NSDate()
 
-                    let newYork = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "America/New York", localeID: "en_US")
+                    let newYork = DateRegion(NSCalendarIdentifierGregorian, "America/New_York", "en_US")
                     let newYorkDate = date.inRegion(newYork)
 
                     expect(newYorkDate.absoluteTime) == date
@@ -156,7 +167,8 @@ class NSDateSpec: QuickSpec {
             
             context("isIn") {
                 
-                let date = NSDate(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let newYork = DateRegion(CalendarType.Gregorian, "EST")
+                let date = NSDate(year: 2015, month: 12, day: 14, hour: 13, region: newYork)!
                 
                 it("should report proper results for year granularity unit") {
                     let date1 = date - 1.years
@@ -182,8 +194,9 @@ class NSDateSpec: QuickSpec {
             
             context("isBefore") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
-                
+                let newYork = DateRegion(CalendarType.Gregorian, "EST")
+                let date = NSDate(year: 2015, month: 12, day: 14, hour: 13, region: newYork)!
+
                 it("should report proper results for minute granularity unit") {
                     let date1 = date - 1.minutes
                     let date2 = date + 1.seconds
@@ -207,7 +220,8 @@ class NSDateSpec: QuickSpec {
             
             context("isAfter") {
                 
-                let date = DateInRegion(year: 2015, month: 12, day: 14, hour: 13, calendarType: CalendarType.Gregorian, timeZoneID: "CET")!
+                let newYork = DateRegion(CalendarType.Gregorian, "EST")
+                let date = NSDate(year: 2015, month: 12, day: 14, hour: 13, region: newYork)!
                 
                 it("should report proper results for week granularity unit") {
                     let date1 = date - 1.weeks

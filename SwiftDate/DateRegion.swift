@@ -51,48 +51,128 @@ public class DateRegion: Equatable {
     /// Initialise with a calendar and/or a time zone
     ///
     /// - Parameters:
-    ///     - calendarID: the calendar identifier to work with to assign, default = the current calendar
-    ///     - timeZoneID: the time zone identifier or -name to work with, default is the default time zone
-    ///     - localeID: the locale ID to work with, default is the current locale
-    ///     - calendarType: the calendar to work with to assign in `CalendarType` format, default = the current calendar
-    ///     - timeZoneRegion: the time zone to work with in `TimeZoneConvertible` format, default is the default time zone
     ///     - calendar: the calendar to work with to assign, default = the current calendar
     ///     - timeZone: the time zone to work with, default is the default time zone
     ///     - locale: the locale to work with, default is the current locale
     ///     - region: a region to copy
     ///
     /// - Note: parameters higher in the list take precedence over parameters lower in the list. E.g.
-    ///     `DateRegion(locale: mylocale, localeID: "en_AU", region)` will copy region and set locale to mylocale, not `en_AU`.
+    ///     `DateRegion(locale: mylocale, "en_AU", region)` will copy region and set locale to mylocale, not `en_AU`.
     ///
     public init(
-        calendarID: String = "",
-        timeZoneID: String = "",
-        localeID: String = "",
-        calType: CalendarType? = nil, // Deprecate in SwiftDate v2.2
-        tzName: TimeZoneConvertible? = nil, // Deprecate in SwiftDate v2.2
-        calendarType: CalendarType? = nil,
-        timeZoneRegion: TimeZoneConvertible? = nil,
-        calendar aCalendar: NSCalendar? = nil,
-        timeZone aTimeZone: NSTimeZone? = nil,
-        locale aLocale: NSLocale? = nil,
-        region: DateRegion? = nil) {
-            calendar = aCalendar ?? calType?.toCalendar() ?? calendarType?.toCalendar() ?? NSCalendar(calendarIdentifier: calendarID) ?? region?.calendar ?? NSCalendar.currentCalendar()
-            timeZone = aTimeZone ?? tzName?.timeZone ?? timeZoneRegion?.timeZone ?? NSTimeZone(abbreviation: timeZoneID) ?? NSTimeZone(name: timeZoneID) ?? region?.timeZone ?? NSTimeZone.defaultTimeZone()
-            locale = aLocale ?? (localeID != "" ? NSLocale(localeIdentifier: localeID): nil) ?? region?.locale ?? aCalendar?.locale ?? NSLocale.currentLocale()
+        calendar: NSCalendar,
+        timeZone: NSTimeZone,
+        locale: NSLocale) {
+            
+            self.calendar = calendar
+            self.timeZone = timeZone
+            self.locale = locale
             
             // Assign calendar fields
-            calendar.timeZone = timeZone
-            calendar.locale = locale
+            self.calendar.timeZone = self.timeZone
+            self.calendar.locale = self.locale
     }
     
-    /// Initialise with components (calendar, time zone, locale in calendar
+    /// Convenience initialiser for DateRegion where you can use any combination of calendar-, tiem zone- and locale identification objects
     ///
     /// - Parameters:
-    ///     - components: the date components that should contain the calendar and time zone, default = the current 
-    ///         calendar and default time zone
+    ///     - _ : any of NSCalendar, NSLocale, NSTimeZone, DateRegion, String.
     ///
-    public convenience init(_ components: NSDateComponents) {
-        self.init(calendar: components.calendar, timeZone: components.timeZone, locale: components.calendar?.locale)
+    /// - Remarks: the `String` type parameter can be any of a locale identifier, calendar identifier, time zone abbreviation, time zone name.
+    ///
+    /// - Note: parameters that are specified left in the list take precedence over parameters right in the list. E.g.
+    ///     `DateRegion(locale: mylocale, "en_AU", region)` will copy region and set locale to mylocale, not `en_AU`.
+    ///
+    public convenience init(_ initObjects: Any...) {
+
+        var calendar: NSCalendar = NSCalendar.currentCalendar()
+        var timeZone: NSTimeZone = NSTimeZone.defaultTimeZone()
+        var locale: NSLocale = NSLocale.currentLocale()
+        
+        for initObject in initObjects.reverse() {
+
+            if initObject is NSCalendar {
+                calendar = (initObject as! NSCalendar)
+                continue
+            }
+            
+            if initObject is NSTimeZone {
+                timeZone = (initObject as! NSTimeZone)
+                continue
+            }
+            
+            if initObject is NSLocale {
+                locale = (initObject as! NSLocale)
+                continue
+            }
+            
+            if initObject is CalendarType {
+                calendar = (initObject as! CalendarType).toCalendar()
+                continue
+            }
+            
+            if initObject is TimeZoneConvertible {
+                timeZone = (initObject as! TimeZoneConvertible).timeZone
+                continue
+            }
+            
+            if initObject is DateRegion {
+                let region = (initObject as! DateRegion)
+                calendar = region.calendar
+                timeZone = region.timeZone
+                locale = region.locale
+                continue
+            }
+            
+            if initObject is Int {
+                let offset = (initObject as! Int)
+                timeZone = NSTimeZone(forSecondsFromGMT: offset)
+                continue
+            }
+            
+            if initObject is NSDateComponents {
+                let components = (initObject as! NSDateComponents)
+                if let generatedCalendar = components.calendar {
+                    calendar = generatedCalendar
+                    if let generatedLocale = generatedCalendar.locale {
+                        locale = generatedLocale
+                    }
+                }
+                if let generatedTimeZone = components.timeZone {
+                    timeZone = generatedTimeZone
+                }
+                continue
+            }
+            
+            if initObject is String {
+                let str = (initObject as! String)
+                
+                if NSLocale.availableLocaleIdentifiers().contains(str) {
+                    locale = NSLocale(localeIdentifier: str)
+                    continue
+                }
+                
+                if let generatedTimeZone = NSTimeZone(abbreviation: str) {
+                    timeZone = generatedTimeZone
+                    continue
+                }
+                
+                if let generatedTimeZone = NSTimeZone(name: str) {
+                    timeZone = generatedTimeZone
+                    continue
+                }
+                
+                if let generatedCalendar = NSCalendar(calendarIdentifier: str) {
+                    calendar = generatedCalendar
+                    continue
+                }
+                
+                // This line should not be reached unless there is an invalid initialisation object in the initObjects array
+                assertionFailure("Illegal initialiser object for DateRegion: \(initObject)")
+            }
+            
+        }
+        self.init(calendar: calendar, timeZone: timeZone, locale: locale)
     }
     
     /// Today's date

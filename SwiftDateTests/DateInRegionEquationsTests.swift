@@ -16,8 +16,8 @@ class DateInRegionEquationsTests: QuickSpec {
 
         describe("DateInRegionEquations") {
 
-            let china = DateRegion(calendarID: NSCalendarIdentifierBuddhist, timeZoneID: "CHT", localeID: "zh_CN")
-            let netherlands = DateRegion(calendarID: NSCalendarIdentifierGregorian, timeZoneID: "CET", localeID: "nl_NL")
+            let china = DateRegion(NSCalendarIdentifierBuddhist, TimeZones.Asia.Shanghai, "zh_Hans_CN")
+            let netherlands = DateRegion(NSCalendarIdentifierGregorian, "CET", "nl_NL")
 
             it("should return true for equating a different object with the same properties") {
                 let date1 = DateInRegion(year: 1999, month: 12, day: 31)!
